@@ -25,12 +25,12 @@ CREATE TABLE gics (
 );
 
 CREATE TABLE person (
-    person_id       NUMBER,
-    first_name      CHAR(20),
-    last_name       CHAR(20),
-    email           VARCHAR(20),
-    gender          NUMBER(1),
-    phone           VARCHAR(20),
+    person_id   NUMBER,
+    first_name  CHAR(20),
+    last_name   CHAR(20),
+    email       VARCHAR(20),
+    gender      NUMBER(1),
+    phone       VARCHAR(20),
     CONSTRAINT person_pk PRIMARY KEY ( person_id )
 );
 
@@ -73,9 +73,9 @@ CREATE TABLE position (
 );
 
 CREATE TABLE payrate (
-    pay_id    NUMBER,
-    hourly    NUMBER,
-    annual    NUMBER,
+    pay_id  NUMBER,
+    hourly  NUMBER,
+    annual  NUMBER,
     CONSTRAINT pay_pk PRIMARY KEY ( pay_id )
 );
 
@@ -94,7 +94,6 @@ CREATE TABLE job (
     CONSTRAINT payrate_fk FOREIGN KEY ( pay_rate )
         REFERENCES payrate ( pay_id )
 );
-
 
 CREATE TABLE skill (
     skill_id  NUMBER,
@@ -121,26 +120,25 @@ CREATE TABLE requirment (
 );
 
 CREATE TABLE course (
-    course_id   NUMBER,
-    title       VARCHAR(20),
-    level       VARCHAR(25),
-    c_desc      VARCHAR(25),
-    status      NUMBER(1),
-    
+    course_id  NUMBER,
+    title      VARCHAR(20),
+    level      VARCHAR(25),
+    c_desc     VARCHAR(25),
+    status     NUMBER(1),
     CONSTRAINT course_pk PRIMARY KEY ( course_id )
 );
 
 CREATE TABLE section (
     section_id  NUMBER,
     course_id   NUMBER,
-    s_year        char(4),
-    c_date      varchar(20),
-    offering    varchar(20),
-    s_format      NUMBER(1),--online/class
+    s_year      CHAR(4),
+    c_date      VARCHAR(20),
+    offering    VARCHAR(20),
+    s_format    NUMBER(1),--online/class
     price       NUMBER,
-    
     CONSTRAINT section_pk PRIMARY KEY ( section_id ),
-    CONSTRAINT course_fk FOREIGN KEY ( course_id ) REFERENCES course( course_id ) 
+    CONSTRAINT course_fk FOREIGN KEY ( course_id )
+        REFERENCES course ( course_id )
 );
 
 
