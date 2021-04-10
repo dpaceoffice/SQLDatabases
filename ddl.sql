@@ -5,6 +5,8 @@ DROP TABLE GICS;
 DROP TABLE COURSE;
 DROP TABLE SECTION;
 DROP TABLE PERSON;
+--TODO: Drop Table for AZ and GV
+--TODO: Add constraints, Primary, and Foreign Keys to AZ and GV
 
 CREATE TABLE GICS (
     INDUSTRY_ID NUMBER,
@@ -74,4 +76,120 @@ CREATE TABLE PayRate(
     CONSTRAINT PayPK PRIMARY KEY(PAY_ID),
     CONSTRAINT JobFK FOREIGN KEY(JOB_CODE) REFERENCES Job(JOB_CODE)
 );
+-------------------------------------------------------------------------------
+CREATE TABLE STORE(
+    StoreID NUMBER,
+    Address VARCHAR(20),
+    ZipCode NUMBER,
+    Phone NUMBER,
+);
 
+CREATE TABLE INVENTORY(
+    ItemNum NUMBER,
+    Title VARCHAR(20),
+    Description VARCHAR(20),
+    Quantity NUMBER,
+    Unit NUMBER,
+    AvgCost NUMBER,
+    ShelfCode NUMBER,
+    MinLevel NUMBER,
+);
+
+CREATE TABLE SALE(
+    InvoiceNbr NUMBER,
+    S_Date DATE,
+    ItemNbr NUMBER,
+    Quantity NUMBER,
+    Price NUMBER,
+    Note VARCHAR,
+    MinLevel NUMBER,
+);
+
+CREATE TABLE PURCHASE(
+    PuchaseNbr NUMBER,
+    P_Date  DATE,
+    ItemNbr NUMBER,
+    Quantity NUMBER,
+    UnitCost NUMBER,
+    Note VARCHAR(20),
+);
+-----------------------------------------------------------------------
+CREATE TABLE FACTORY(
+    FactoryID NUMBER,
+    FactoryName VARCHAR(50),
+    Address VARCHAR(50),
+    ZipCode NUMBER,
+    Phone NUMBER,
+    Manager VARCHAR(20),
+);
+
+CREATE TABLE MATERIAL(
+    MaterialCode NUMBER,
+    MaterialName VARCHAR(50),
+    Quantity NUMBER,
+    Unit NUMBER,
+    MinLevel NUMBER,
+
+);
+
+CREATE TABLE PRODUCT(
+    ProductCode NUMBER,
+    ProductName VARCHAR(20),
+    Description VARCHAR(50),
+    Quantity NUMBER,
+    Unit NUMBER,
+    AvgCost NUMBER,
+
+);
+
+CREATE TABLE CONTRACT(
+    ContractID NUMBER,
+    CustomerID NUMBER,
+    C_Date DATE,
+    SaleAmount NUMBER,
+    PaySchedule DATE,
+
+);
+
+CREATE TABLE LINEITEM(
+    ContractID NUMBER,
+    ProductCode NUMBER,
+    Quantity NUMBER,
+
+);
+
+CREATE TABLE PURCHASE(
+    PurchaseNum NUMBER,
+    SupplierID NUMBER,
+    SupplierOrderNum NUMBER,
+    BookDate DATE,
+    PayDate DATE,
+    Note VARCHAR(20),
+);
+
+CREATE TABLE PURCHASELINE(
+    PurchaseNum NUMBER,
+    MaterialCode NUMBER,
+    Quantity Number,
+
+);
+
+CREATE TABLE SUPPLIER(
+    CompanyID NUMBER,
+    Website VARCHAR(50),
+    ContactEmail VARCHAR(50),
+);
+
+CREATE TABLE CUSTOMER(
+    CompanyID NUMBER,
+    ContactPerson VARCHAR(20),
+    ContactEmail VARCHAR(50),
+
+);
+
+CREATE TABLE MAKES(
+    FactoryID NUMBER,
+    ProductCode NUMBER,
+    Quantity NUMBER,
+
+);
