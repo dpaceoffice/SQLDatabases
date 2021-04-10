@@ -1,195 +1,256 @@
-DROP TABLE Skill;
-DROP TABLE Position;
-DROP TABLE Job;
-DROP TABLE GICS;
-DROP TABLE COURSE;
-DROP TABLE SECTION;
-DROP TABLE PERSON;
+DROP TABLE skill;
+
+DROP TABLE position;
+
+DROP TABLE job;
+
+DROP TABLE gics;
+
+DROP TABLE course;
+
+DROP TABLE section;
+
+DROP TABLE person;
 --TODO: Drop Table for AZ and GV
 --TODO: Add constraints, Primary, and Foreign Keys to AZ and GV
 
-CREATE TABLE GICS (
-    INDUSTRY_ID NUMBER,
-    INDUSTRY_TITLE VARCHAR(25),
-    G_LEVEL NUMBER,
-    G_DESC VARCHAR(100),
-    PARENT_ID NUMBER,
-    CONSTRAINT GicsPK PRIMARY KEY (INDUSTRY_ID, PARENT_ID)
+CREATE TABLE gics (
+    parent_id       NUMBER,
+    industry_id     NUMBER,
+    industry_title  VARCHAR(25),
+    g_level         NUMBER,
+    g_desc          VARCHAR(100),
+    CONSTRAINT gics_pk PRIMARY KEY ( parent_id,
+                                     industry_id )
 );
 
-CREATE TABLE COMPANY (
-    COMPANY_ID NUMBER,
-    ADDRESS_ID NUMBER,
-    INDUSTRY_ID NUMBER,--forign, primary
-    SUB_INDUSTRY_ID NUMBER,--forign, primary
-    WEBSITE VARCHAR(20),
-    CONSTRAINT CompanyPK PRIMARY KEY (COMPANY_ID, INDUSTRY_ID, SUB_INDUSTRY_ID),
-    CONSTRAINT AddressFK FOREIGN KEY(ADDRESS_ID) REFERENCES ADDRESS(ADDRESS_ID),
-    CONSTRAINT IndustryFK FOREIGN KEY(INDUSTRY_ID) REFERENCES GICS(PARENT_ID),
-    CONSTRAINT SubIndustryFK FOREIGN KEY(SUB_INDUSTRY_ID) REFERENCES GICS(INDUSTRY_ID)
+CREATE TABLE person (
+    person_id       NUMBER,
+    first_name      CHAR(20),
+    last_name       CHAR(20),
+    email           VARCHAR(20),
+    gender          NUMBER(1),
+    phone           VARCHAR(20),
+    CONSTRAINT person_pk PRIMARY KEY ( person_id )
 );
 
-CREATE TABLE ADDRESS (
-    ADDRESS_ID NUMBER,
-    COMPANY_ID NUMBER, 
-    ZIP NUMBER(5),
-    STREET VARCHAR(20),
-    CITY VARCHAR(20),
-    CONSTRAINT AddressPK PRIMARY KEY (ADDRESS_ID),
-    CONSTRAINT CompanyFK FOREIGN KEY(COMPANY_ID) REFERENCES COMPANY(COMPANY_ID)
+CREATE TABLE company (
+    company_id       NUMBER,
+    industry_id      NUMBER,--forign, primary
+    sub_industry_id  NUMBER,--forign, primary
+    website          VARCHAR(20),
+    CONSTRAINT company_pk PRIMARY KEY ( company_id,
+                                        industry_id,
+                                        sub_industry_id ),
+    CONSTRAINT industry_fk FOREIGN KEY ( industry_id )
+        REFERENCES gics ( parent_id ),
+    CONSTRAINT subindustry_fk FOREIGN KEY ( sub_industry_id )
+        REFERENCES gics ( industry_id )
 );
 
-CREATE TABLE Skill(
-	SKILL_CODE NUMBER,
-	TITLE VARCHAR(20),
-	S_DESC VARCHAR(25),
-	S_LEVEL NUMBER(2),--advanced, beginner, medium
-	CONSTRAINT SkillPK PRIMARY KEY (SKILL_CODE)
+CREATE TABLE address (
+    address_id  NUMBER,
+    company_id  NUMBER,
+    person_id   NUMBER,
+    zip         NUMBER(5),
+    street      VARCHAR(20),
+    city        VARCHAR(20),
+    CONSTRAINT address_pk PRIMARY KEY ( address_id ),
+    CONSTRAINT company_fk FOREIGN KEY ( company_id )
+        REFERENCES company ( company_id ),
+    CONSTRAINT person_fk FOREIGN KEY ( person_id )
+        REFERENCES person ( person_id )
 );
 
-CREATE TABLE Position(
-	POSITION_CODE NUMBER,
-	TITLE VARCHAR(20),
-	S_DESC VARCHAR(25),
-	CONSTRAINT PositionPK PRIMARY KEY (POSITION_CODE)
+CREATE TABLE position (
+    position_id  NUMBER,
+    company_id   NUMBER,
+    title        VARCHAR(20),
+    p_desc       VARCHAR(25),
+    pay          NUMBER(1), --high, low
+
+    CONSTRAINT position_pk PRIMARY KEY ( position_id )
 );
 
-CREATE TABLE Job(
-	JOB_CODE NUMBER,
-	POSITION_CODE NUMBER,
-    COMPANY VARCHAR(20),
-    CATEGORY_CODE NUMBER,
-	EMPLOYEEMODE NUMBER(1),--full time or part time, multivalue boolean?
-	SKILL_CODE NUMBER,
-	PAY_TYPE NUMBER(1), -- Wage or Salary, multivalue boolean?
-    PAY_RATE NUMBER, --derived, multivalue
-	CONSTRAINT JobPK PRIMARY KEY (JOB_CODE),
-    CONSTRAINT SkillFK FOREIGN KEY (SKILL_CODE) REFERENCES Skill(SKILL_CODE),
-    CONSTRAINT PayRateFK FOREIGN KEY (PAY_RATE) REFERENCES PayRate(PAY_RATE)
+CREATE TABLE payrate (
+    pay_id    NUMBER,
+    hourly    NUMBER,
+    annual    NUMBER,
+    CONSTRAINT pay_pk PRIMARY KEY ( pay_id )
 );
 
-CREATE TABLE PayRate(
-    PAY_ID NUMBER,
-    JOB_CODE NUMBER,
-    HOURLY NUMBER,
-    ANNUAL NUMBER,
-    CONSTRAINT PayPK PRIMARY KEY(PAY_ID),
-    CONSTRAINT JobFK FOREIGN KEY(JOB_CODE) REFERENCES Job(JOB_CODE)
+CREATE TABLE job (
+    job_id        NUMBER,
+    position_id   NUMBER,
+    company       VARCHAR(20),
+    category_id   NUMBER,
+    employeemode  NUMBER(1),--full time or part time, multivalue boolean?
+    pay_type      NUMBER(1), -- Wage or Salary, multivalue boolean?
+    pay_rate      NUMBER, --derived, multivalue
+
+    CONSTRAINT job_pk PRIMARY KEY ( job_id ),
+    CONSTRAINT position_fk FOREIGN KEY ( position_id )
+        REFERENCES position ( position_id ),
+    CONSTRAINT payrate_fk FOREIGN KEY ( pay_rate )
+        REFERENCES payrate ( pay_id )
 );
+
+
+CREATE TABLE skill (
+    skill_id  NUMBER,
+    title     VARCHAR(20),
+    s_desc    VARCHAR(25),
+    s_level   NUMBER(2),--advanced, beginner, medium
+
+    CONSTRAINT skill_pk PRIMARY KEY ( skill_id )
+);
+
+CREATE TABLE requirment (
+    req_id    NUMBER,--requirement id
+    pos_id    NUMBER,--for position?
+    job_id    NUMBER,--for job? 
+    skill_id  NUMBER,--skill required
+
+    CONSTRAINT req_pk PRIMARY KEY ( req_id ),
+    CONSTRAINT pos_fk FOREIGN KEY ( pos_id )
+        REFERENCES position ( position_id ),
+    CONSTRAINT job_fk FOREIGN KEY ( job_id )
+        REFERENCES job ( job_id ),
+    CONSTRAINT skill_fk FOREIGN KEY ( skill_id )
+        REFERENCES skill ( skill_id )
+);
+
+CREATE TABLE course (
+    course_id   NUMBER,
+    title       VARCHAR(20),
+    level       VARCHAR(25),
+    c_desc      VARCHAR(25),
+    status      NUMBER(1),
+    
+    CONSTRAINT course_pk PRIMARY KEY ( course_id )
+);
+
+CREATE TABLE section (
+    section_id  NUMBER,
+    course_id   NUMBER,
+    s_year        char(4),
+    c_date      varchar(20),
+    offering    varchar(20),
+    s_format      NUMBER(1),--online/class
+    price       NUMBER,
+    
+    CONSTRAINT section_pk PRIMARY KEY ( section_id ),
+    CONSTRAINT course_fk FOREIGN KEY ( course_id ) REFERENCES course( course_id ) 
+);
+
+
 -------------------------------------------------------------------------------
-CREATE TABLE STORE(
-    StoreID NUMBER,
-    Address VARCHAR(20),
-    ZipCode NUMBER,
-    Phone NUMBER,
+CREATE TABLE store (
+    storeid  NUMBER,
+    address  VARCHAR(20),
+    zipcode  NUMBER,
+    phone    NUMBER
 );
 
-CREATE TABLE INVENTORY(
-    ItemNum NUMBER,
-    Title VARCHAR(20),
-    Description VARCHAR(20),
-    Quantity NUMBER,
-    Unit NUMBER,
-    AvgCost NUMBER,
-    ShelfCode NUMBER,
-    MinLevel NUMBER,
+CREATE TABLE inventory (
+    itemnum      NUMBER,
+    title        VARCHAR(20),
+    description  VARCHAR(20),
+    quantity     NUMBER,
+    unit         NUMBER,
+    avgcost      NUMBER,
+    shelfcode    NUMBER,
+    minlevel     NUMBER
 );
 
-CREATE TABLE SALE(
-    InvoiceNbr NUMBER,
-    S_Date DATE,
-    ItemNbr NUMBER,
-    Quantity NUMBER,
-    Price NUMBER,
-    Note VARCHAR,
-    MinLevel NUMBER,
+CREATE TABLE sale (
+    invoicenbr  NUMBER,
+    s_date      DATE,
+    itemnbr     NUMBER,
+    quantity    NUMBER,
+    price       NUMBER,
+    note        varchar,
+    minlevel    NUMBER
 );
 
-CREATE TABLE PURCHASE(
-    PuchaseNbr NUMBER,
-    P_Date  DATE,
-    ItemNbr NUMBER,
-    Quantity NUMBER,
-    UnitCost NUMBER,
-    Note VARCHAR(20),
+CREATE TABLE purchase (
+    puchasenbr  NUMBER,
+    p_date      DATE,
+    itemnbr     NUMBER,
+    quantity    NUMBER,
+    unitcost    NUMBER,
+    note        VARCHAR(20)
 );
 -----------------------------------------------------------------------
-CREATE TABLE FACTORY(
-    FactoryID NUMBER,
-    FactoryName VARCHAR(50),
-    Address VARCHAR(50),
-    ZipCode NUMBER,
-    Phone NUMBER,
-    Manager VARCHAR(20),
+CREATE TABLE factory (
+    factoryid    NUMBER,
+    factoryname  VARCHAR(50),
+    address      VARCHAR(50),
+    zipcode      NUMBER,
+    phone        NUMBER,
+    manager      VARCHAR(20)
 );
 
-CREATE TABLE MATERIAL(
-    MaterialCode NUMBER,
-    MaterialName VARCHAR(50),
-    Quantity NUMBER,
-    Unit NUMBER,
-    MinLevel NUMBER,
-
+CREATE TABLE material (
+    materialcode  NUMBER,
+    materialname  VARCHAR(50),
+    quantity      NUMBER,
+    unit          NUMBER,
+    minlevel      NUMBER
 );
 
-CREATE TABLE PRODUCT(
-    ProductCode NUMBER,
-    ProductName VARCHAR(20),
-    Description VARCHAR(50),
-    Quantity NUMBER,
-    Unit NUMBER,
-    AvgCost NUMBER,
-
+CREATE TABLE product (
+    productcode  NUMBER,
+    productname  VARCHAR(20),
+    description  VARCHAR(50),
+    quantity     NUMBER,
+    unit         NUMBER,
+    avgcost      NUMBER
 );
 
-CREATE TABLE CONTRACT(
-    ContractID NUMBER,
-    CustomerID NUMBER,
-    C_Date DATE,
-    SaleAmount NUMBER,
-    PaySchedule DATE,
-
+CREATE TABLE contract (
+    contractid   NUMBER,
+    customerid   NUMBER,
+    c_date       DATE,
+    saleamount   NUMBER,
+    payschedule  DATE
 );
 
-CREATE TABLE LINEITEM(
-    ContractID NUMBER,
-    ProductCode NUMBER,
-    Quantity NUMBER,
-
+CREATE TABLE lineitem (
+    contractid   NUMBER,
+    productcode  NUMBER,
+    quantity     NUMBER
 );
 
-CREATE TABLE PURCHASE(
-    PurchaseNum NUMBER,
-    SupplierID NUMBER,
-    SupplierOrderNum NUMBER,
-    BookDate DATE,
-    PayDate DATE,
-    Note VARCHAR(20),
+CREATE TABLE purchase (
+    purchasenum       NUMBER,
+    supplierid        NUMBER,
+    supplierordernum  NUMBER,
+    bookdate          DATE,
+    paydate           DATE,
+    note              VARCHAR(20)
 );
 
-CREATE TABLE PURCHASELINE(
-    PurchaseNum NUMBER,
-    MaterialCode NUMBER,
-    Quantity Number,
-
+CREATE TABLE purchaseline (
+    purchasenum   NUMBER,
+    materialcode  NUMBER,
+    quantity      NUMBER
 );
 
-CREATE TABLE SUPPLIER(
-    CompanyID NUMBER,
-    Website VARCHAR(50),
-    ContactEmail VARCHAR(50),
+CREATE TABLE supplier (
+    companyid     NUMBER,
+    website       VARCHAR(50),
+    contactemail  VARCHAR(50)
 );
 
-CREATE TABLE CUSTOMER(
-    CompanyID NUMBER,
-    ContactPerson VARCHAR(20),
-    ContactEmail VARCHAR(50),
-
+CREATE TABLE customer (
+    companyid      NUMBER,
+    contactperson  VARCHAR(20),
+    contactemail   VARCHAR(50)
 );
 
-CREATE TABLE MAKES(
-    FactoryID NUMBER,
-    ProductCode NUMBER,
-    Quantity NUMBER,
-
+CREATE TABLE makes (
+    factoryid    NUMBER,
+    productcode  NUMBER,
+    quantity     NUMBER
 );
