@@ -1,18 +1,33 @@
+-- Andy, David, Coral
+-- Spring 2021 
+-- CSCI 4152
+
 DROP TABLE skill;
-
 DROP TABLE position;
-
 DROP TABLE job;
-
 DROP TABLE gics;
-
 DROP TABLE course;
-
 DROP TABLE section;
-
 DROP TABLE person;
---TODO: Drop Table for AZ and GV
---TODO: Add constraints, Primary, and Foreign Keys to AZ and GV
+
+DROP TABLE purchaseAZ;
+DROP TABLE sale;
+DROP TABLE inventory;
+DROP TABLE stocks;
+DROP TABLE store;
+
+DROP TABLE makes;
+DROP TABLE customer;
+DROP TABLE supplier;
+DROP TABLE purchaseline;
+DROP TABLE purchase;
+DROP TABLE lineitem;
+DROP TABLE contract;
+DROP TABLE product;
+DROP TABLE material;
+DROP TABLE searches;
+DROP TABLE factory;
+
 
 CREATE TABLE gics (
     parent_id       NUMBER,
@@ -147,9 +162,20 @@ CREATE TABLE store (
     storeid  NUMBER,
     address  VARCHAR(20),
     zipcode  NUMBER,
-    phone    NUMBER
+    phone    NUMBER,
+
+    CONSTRAINT store_pk PRIMARY KEY (storeid)
 );
 
+CREATE TABLE stocks(
+    storeid  NUMBER,
+    itemnum  NUMBER,
+
+    CONSTRAINT stocks_fk FOREIGN KEY ( storeid )
+        REFERENCES store ( storeid ),
+    CONSTRAINT stocks_fk FOREIGN KEY ( itemnum )
+        REFERENCES inventory ( itemnum )
+);
 CREATE TABLE inventory (
     itemnum      NUMBER,
     title        VARCHAR(20),
@@ -158,7 +184,11 @@ CREATE TABLE inventory (
     unit         NUMBER,
     avgcost      NUMBER,
     shelfcode    NUMBER,
-    minlevel     NUMBER
+    minlevel     NUMBER,
+
+    CONSTRAINT inventory_pk PRIMARY KEY (itemnum, 
+        quantity, avgcost, minlevel)
+
 );
 
 CREATE TABLE sale (
@@ -168,16 +198,32 @@ CREATE TABLE sale (
     quantity    NUMBER,
     price       NUMBER,
     note        varchar,
-    minlevel    NUMBER
+    minlevel    NUMBER,
+
+    CONSTRAINT sale_pk PRIMARY KEY (invoicenbr),
+    CONSTRAINT sale_fk FOREIGN KEY ( itemnbr )
+        REFERENCES inventory ( itemnum ),
+    CONSTRAINT sale_fk FOREIGN KEY ( quantity )
+        REFERENCES inventory ( quantity ),
+    CONSTRAINT sale_fk FOREIGN KEY ( minlevel )
+        REFERENCES inventory ( minlevel ),
 );
 
-CREATE TABLE purchase (
+CREATE TABLE purchaseAZ (
     puchasenbr  NUMBER,
     p_date      DATE,
     itemnbr     NUMBER,
     quantity    NUMBER,
     unitcost    NUMBER,
     note        VARCHAR(20)
+
+    CONSTRAINT purchaseAZ_pk PRIMARY KEY (puchasenbr),
+    CONSTRAINT purchase_fk FOREIGN KEY ( itemnbr )
+        REFERENCES inventory ( itemnum ),
+    CONSTRAINT purchaseAZ_fk FOREIGN KEY ( quantity )
+        REFERENCES inventory ( quantity ),
+    CONSTRAINT purchaseAZ_fk FOREIGN KEY ( unitcost )
+        REFERENCES inventory ( avgcost )
 );
 -----------------------------------------------------------------------
 CREATE TABLE factory (
@@ -186,7 +232,18 @@ CREATE TABLE factory (
     address      VARCHAR(50),
     zipcode      NUMBER,
     phone        NUMBER,
-    manager      VARCHAR(20)
+    manager      VARCHAR(20),
+
+    CONSTRAINT factory_pk PRIMARY KEY (factoryid),
+);
+CREATE TABLE searches(
+    factoryid    NUMBER,
+    materialcode  NUMBER,
+
+    CONSTRAINT searches_fk FOREIGN KEY ( factoryid )
+        REFERENCES factory ( factoryid ),
+    CONSTRAINT searches_fk FOREIGN KEY ( materialcode )
+        REFERENCES material ( materialcode )
 );
 
 CREATE TABLE material (
@@ -194,8 +251,9 @@ CREATE TABLE material (
     materialname  VARCHAR(50),
     quantity      NUMBER,
     unit          NUMBER,
-    minlevel      NUMBER
-);
+    minlevel      NUMBER,
+
+    CONSTRAINT material_pk PRIMARY KEY (materialcode,quantity)
 
 CREATE TABLE product (
     productcode  NUMBER,
@@ -203,21 +261,34 @@ CREATE TABLE product (
     description  VARCHAR(50),
     quantity     NUMBER,
     unit         NUMBER,
-    avgcost      NUMBER
-);
+    avgcost      NUMBER,
+
+    CONSTRAINT product_pk PRIMARY KEY (productcode, quantity)
 
 CREATE TABLE contract (
     contractid   NUMBER,
     customerid   NUMBER,
     c_date       DATE,
     saleamount   NUMBER,
-    payschedule  DATE
+    payschedule  DATE,
+
+    CONSTRAINT contract_pk PRIMARY KEY (contractid),
+    CONSTRAINT contract_fk FOREIGN KEY ( customerid )
+        REFERENCES customer ( companyid )
+
 );
 
 CREATE TABLE lineitem (
     contractid   NUMBER,
     productcode  NUMBER,
     quantity     NUMBER
+
+    CONSTRAINT lineitem_fk FOREIGN KEY ( contractid )
+        REFERENCES contract ( contractid ),
+    CONSTRAINT lineitem_fk FOREIGN KEY ( productcode )
+        REFERENCES product ( productcode ),
+    CONSTRAINT lineitem_fk FOREIGN KEY ( quantity )
+        REFERENCES product ( quantity )
 );
 
 CREATE TABLE purchase (
@@ -226,29 +297,51 @@ CREATE TABLE purchase (
     supplierordernum  NUMBER,
     bookdate          DATE,
     paydate           DATE,
-    note              VARCHAR(20)
+    note              VARCHAR(20),
+
+    CONSTRAINT purchase_pk PRIMARY KEY (purchasenum),
+    CONSTRAINT purchase_fk FOREIGN KEY ( supplierid )
+        REFERENCES supplier ( companyid )
 );
 
 CREATE TABLE purchaseline (
     purchasenum   NUMBER,
     materialcode  NUMBER,
-    quantity      NUMBER
+    quantity      NUMBER,
+
+    CONSTRAINT purchaseline_fk FOREIGN KEY ( purchasenum )
+        REFERENCES purchase ( purchasenum ),
+    CONSTRAINT purchaseline_fk FOREIGN KEY ( materialcode )
+        REFERENCES material ( materialcode ),
+    CONSTRAINT purchaseline_fk FOREIGN KEY ( quantity )
+        REFERENCES material ( quantity )
 );
 
 CREATE TABLE supplier (
     companyid     NUMBER,
     website       VARCHAR(50),
-    contactemail  VARCHAR(50)
+    contactemail  VARCHAR(50),
+
+    CONSTRAINT supplier_pk PRIMARY KEY (companyid),
 );
 
 CREATE TABLE customer (
     companyid      NUMBER,
     contactperson  VARCHAR(20),
-    contactemail   VARCHAR(50)
+    contactemail   VARCHAR(50),
+
+    CONSTRAINT customer_pk PRIMARY KEY (companyid),
 );
 
 CREATE TABLE makes (
     factoryid    NUMBER,
     productcode  NUMBER,
-    quantity     NUMBER
+    quantity     NUMBER,
+
+    CONSTRAINT makes_fk FOREIGN KEY ( factoryid )
+        REFERENCES factory ( factoryid ),
+    CONSTRAINT makes_fk FOREIGN KEY ( productcode )
+        REFERENCES product ( productcode ),
+    CONSTRAINT makes_fk FOREIGN KEY ( quantity )
+        REFERENCES product ( quantity )
 );
