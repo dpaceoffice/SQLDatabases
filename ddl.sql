@@ -117,7 +117,8 @@ CREATE TABLE position (
     p_desc       VARCHAR(25),
     pay          NUMBER(1), --high, low
 
-    CONSTRAINT position_pk PRIMARY KEY ( position_id )
+    CONSTRAINT position_pk PRIMARY KEY ( position_id ),
+    CONSTRAINT position_companyid_fk FOREIGN KEY (company_id) REFERENCES company ( company_id )
 );
 
 CREATE TABLE payrate (
