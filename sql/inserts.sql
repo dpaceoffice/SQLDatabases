@@ -220,7 +220,6 @@ INSERT INTO job VALUES ();
 
 commit;
 
-<<<<<<< HEAD
 INSERT INTO skill VALUES (0, '.NET Programming', 'NULL', '0');
 INSERT INTO skill VALUES (1, 'Ab Initio', 'NULL', '0');
 INSERT INTO skill VALUES (2, 'Accounting Software', 'NULL', '0');
@@ -491,12 +490,6 @@ INSERT INTO skill VALUES (266, 'WordPress', 'NULL', '0');
 INSERT INTO skill VALUES (267, 'XHTML', 'NULL', '0');
 INSERT INTO skill VALUES (268, 'Yardi Software', 'NULL', '0');
 INSERT INTO skill VALUES (269, 'Youtube', 'NULL', '0');
-=======
-INSERT INTO skill VALUES ();
-INSERT INTO skill VALUES ();
-INSERT INTO skill VALUES ();
-INSERT INTO skill VALUES ();
->>>>>>> 70e3b6f248137e9ec6aa65a0181d96f04c56103c
 
 commit;
 
