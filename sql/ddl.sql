@@ -19,7 +19,7 @@ DROP TABLE company;
 DROP TABLE person;
 DROP TABLE gics;
 
---GZ
+--AZ
 
 DROP TABLE purchaseaz;
 
@@ -30,6 +30,8 @@ DROP TABLE inventory;
 DROP TABLE stocks;
 
 DROP TABLE store;
+
+--GV
 
 DROP TABLE makes;
 
@@ -256,12 +258,12 @@ CREATE TABLE p_works (
         REFERENCES job ( job_id )
 );
 
------------------------------------------------------------------------------GZ
+-----------------------------------------------------------------------------AZ
 CREATE TABLE store (
     storeid  NUMBER,
     address  VARCHAR(20),
     zipcode  NUMBER,
-    phone    NUMBER,
+    phone    CHAR(12),
     CONSTRAINT store_pk PRIMARY KEY ( storeid )
 );
 
@@ -277,7 +279,7 @@ CREATE TABLE stocks (
 CREATE TABLE inventory (
     itemnum      NUMBER,
     title        VARCHAR(20),
-    description  VARCHAR(20),
+    description  VARCHAR(50),
     quantity     NUMBER,
     unit         NUMBER,
     avgcost      NUMBER,
@@ -312,7 +314,7 @@ CREATE TABLE purchaseaz (
     itemnbr     NUMBER,
     quantity    NUMBER,
     unitcost    NUMBER,
-    note        VARCHAR(20),
+    note        VARCHAR(50),
     CONSTRAINT purchaseaz_pk PRIMARY KEY ( puchasenbr ),
     CONSTRAINT purchase_fk FOREIGN KEY ( itemnbr )
         REFERENCES inventory ( itemnum ),
@@ -321,13 +323,13 @@ CREATE TABLE purchaseaz (
     CONSTRAINT purchaseaz_fk FOREIGN KEY ( unitcost )
         REFERENCES inventory ( avgcost )
 );
-------------------------------------------------------------------------------AZ
+------------------------------------------------------------------------------GV
 CREATE TABLE factory (
     factoryid    NUMBER,
     factoryname  VARCHAR(50),
     address      VARCHAR(50),
     zipcode      NUMBER,
-    phone        NUMBER,
+    phone        CHAR(12),
     manager      VARCHAR(20),
     CONSTRAINT factory_pk PRIMARY KEY ( factoryid )
 );
