@@ -1,6 +1,5 @@
 from csv import reader
 # open file in read mode
-
 file = open("./materials/indeed100.txt")
 data = file.readlines()
 count = 0
