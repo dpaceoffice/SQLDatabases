@@ -83,18 +83,17 @@ CREATE TABLE person (
 
 CREATE TABLE company (
     company_id       NUMBER,
+    cname            VARCHAR(255),
+    cdesc            VARCHAR(255),   
     industry_id      NUMBER,--forign, primary
     sub_industry_id  NUMBER,--forign, primary
-    website          VARCHAR(20),
+    website          VARCHAR(255),
     
-    CONSTRAINT company_pk PRIMARY KEY ( company_id,
-                                        industry_id,
-                                        sub_industry_id ),
+    CONSTRAINT company_pk PRIMARY KEY ( company_id ),
     CONSTRAINT company_industry_fk FOREIGN KEY ( industry_id )
         REFERENCES gics ( parent_id ),
     CONSTRAINT company_subindustry_fk FOREIGN KEY ( sub_industry_id )
         REFERENCES gics ( industry_id ),
-    CONSTRAINT UK_COMPANYID_COMPANY UNIQUE(company_id)
 );
 
 CREATE TABLE address (
