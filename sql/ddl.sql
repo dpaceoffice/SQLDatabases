@@ -93,7 +93,7 @@ CREATE TABLE company (
     CONSTRAINT company_industry_fk FOREIGN KEY ( industry_id )
         REFERENCES gics ( parent_id ),
     CONSTRAINT company_subindustry_fk FOREIGN KEY ( sub_industry_id )
-        REFERENCES gics ( industry_id ),
+        REFERENCES gics ( industry_id )
 );
 
 CREATE TABLE address (
