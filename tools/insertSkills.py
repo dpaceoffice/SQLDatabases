@@ -13,5 +13,5 @@ with open('skill270.csv', 'r') as read_obj:
         s_desc = 'NULL'
         s_level = 0
         string = 'INSERT INTO skill VALUES ('+str(skill_id)+', \''+str(title[0])+'\', \''+s_desc+'\', \''+str(s_level)+'\');'
-        print(string)
+        print(string).replace('\'','')
         count += 1
