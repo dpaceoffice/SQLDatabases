@@ -31,7 +31,7 @@ INSERT INTO person VALUES (147, 'Coral', 'Mckeon', 'cmckeon24@gmail.com', 'M', '
 INSERT INTO person VALUES (246, 'Amanda', 'Bui', 'abui445@gmail.com', 'F', '578-441-3365');
 
 commit;
-
+set define off
 INSERT INTO company VALUES (0, 'Bay State', 'We have an exciting opportunity for an IT Specialist to join our team. Bay State brings together experienced IT professionals and the latest state-of-the-art...', 451020, 45102010, 'href=https://www.indeed.com/rc/clk?jk=e0f433568fabe8e1&fccid=19aa0bbdd75afe67');
 INSERT INTO company VALUES (1, 'AT&T', 'High School Diploma or General Equivalency Diploma (GED) Install, configure, service, repair, and maintain information technology systems in both a stand', 451020, 45102010, 'href=https://www.indeed.com/rc/clk?jk=af641a3c3dea6dc6&fccid=25b5166547bbf543');
 INSERT INTO company VALUES (2, 'ACI Federal', 'Responsibilities: * Apply specialized knowledge in a single discipline such as assembly/integration, cross-discipline functions, data engineering, indust', 451020, 45102010, 'href=https://www.indeed.com/company/ACI-Federal/jobs/Information-Technology-Specialist-c5c93b734fc9673c?fccid=58476d2e8b9c7544');
@@ -132,7 +132,7 @@ INSERT INTO company VALUES (96, 'Capriccio Software', '1 year customer service e
 INSERT INTO company VALUES (97, 'General Electri', 'Bachelors Degree in ?STEM? Majors (Science, Technology, Engineering and Math) OR Completion of a code development pair-programming, bootcamp-style, or...', 451020, 45102010, 'href=https://www.indeed.com/rc/clk?jk=5377ff5d86d6d202&fccid=c5c99ec01e2125aa');
 INSERT INTO company VALUES (98, 'CGI', 'Founded in 1976, CGI is a leading IT and business process services firm committed to helping clients succeed....', 451020, 45102010, 'href=https://www.indeed.com/rc/clk?jk=5c3d0fced8181f57&fccid=d2841a5c0380b93d');
 INSERT INTO company VALUES (99, 'PosiGe', 'The IT Manager is responsible for developing and maintaining a good IT environment. High Degree of ownership in all matters within the IT infrastructure....', 451020, 45102010, 'href=https://www.indeed.com/rc/clk?jk=d4fdb9499f53ddc4&fccid=a19e8da745403832');
-
+set define on
 commit;
 
 INSERT INTO address VALUES ();
