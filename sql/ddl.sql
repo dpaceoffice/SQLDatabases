@@ -57,16 +57,12 @@ DROP TABLE factory;
 
 ---------------------------------------------------------------------LD database
 CREATE TABLE gics (
-    parent_id       NUMBER,
     industry_id     NUMBER,
-    industry_title  VARCHAR(25),
-    g_level         NUMBER,
-    g_desc          VARCHAR(100),
+    sub_industry_id NUMBER,
+    industry_title  VARCHAR(255),
+    g_desc          VARCHAR(255),
     
-    CONSTRAINT gics_pk PRIMARY KEY ( parent_id,
-                                     industry_id ),
-    CONSTRAINT UK_PARENTID_GICS UNIQUE(parent_id),
-    CONSTRAINT UK_INDUSTRYID_GICS UNIQUE(industry_id)
+    CONSTRAINT gics_pk PRIMARY KEY ( sub_industry_id )
     
 );
 
@@ -75,7 +71,7 @@ CREATE TABLE person (
     first_name  CHAR(20),
     last_name   CHAR(20),
     email       VARCHAR(20),
-    gender      NUMBER(1),
+    gender      NUMBER(1),--0 = male 1 = female
     phone       VARCHAR(20),
     
     CONSTRAINT person_pk PRIMARY KEY ( person_id )
@@ -85,15 +81,15 @@ CREATE TABLE company (
     company_id       NUMBER,
     cname            VARCHAR(255),
     cdesc            VARCHAR(255),   
-    industry_id      NUMBER,--forign, primary
-    sub_industry_id  NUMBER,--forign, primary
+    industry_id      NUMBER,--forign
+    sub_industry_id  NUMBER,--forign
     website          VARCHAR(255),
     
     CONSTRAINT company_pk PRIMARY KEY ( company_id ),
-    CONSTRAINT company_industry_fk FOREIGN KEY ( industry_id )
-        REFERENCES gics ( parent_id ),
+    --CONSTRAINT company_industry_fk FOREIGN KEY ( industry_id )
+        --REFERENCES gics ( industry_id )
     CONSTRAINT company_subindustry_fk FOREIGN KEY ( sub_industry_id )
-        REFERENCES gics ( industry_id )
+        REFERENCES gics ( sub_industry_id )
 );
 
 CREATE TABLE address (
@@ -133,7 +129,7 @@ CREATE TABLE payrate (
 CREATE TABLE job (
     job_id        NUMBER,
     position_id   NUMBER,
-    company       VARCHAR(20),
+    company       VARCHAR(50),
     category_id   NUMBER,
     employeemode  NUMBER(1),--full time or part time, boolean?
     pay_type      NUMBER(1), -- Wage or Salary, boolean?
@@ -148,8 +144,8 @@ CREATE TABLE job (
 
 CREATE TABLE skill (
     skill_id  NUMBER,
-    title     VARCHAR(20),
-    s_desc    VARCHAR(25),
+    title     VARCHAR(100),
+    s_desc    VARCHAR(100),
     s_level   NUMBER(2),--advanced, beginner, medium
 
     CONSTRAINT skill_pk PRIMARY KEY ( skill_id )
