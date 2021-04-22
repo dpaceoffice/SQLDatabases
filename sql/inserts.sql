@@ -544,54 +544,36 @@ INSERT INTO skill VALUES (269, 'Youtube', 'Skill id: 269', 0);
 set define on
 commit;
 
+INSERT INTO address VALUES (1, NULL, 369, 70058, '129 Rocky St', 'New Orleans');
+INSERT INTO address VALUES (2, 98, NULL, 70058, '130 Rocky St', 'New Orleans');
+commit;
 
-INSERT INTO address VALUES ();
-INSERT INTO address VALUES ();
-INSERT INTO address VALUES ();
-INSERT INTO address VALUES ();
+INSERT INTO jposition VALUES (1, 98, 'Developer', 'Main program developer in SQL.');
+INSERT INTO jposition VALUES (2, 99, 'Developer Assitant', 'Junior program developer in SQL.');
+commit;
+
+INSERT INTO payrate VALUES (1, NULL, 100000);
+INSERT INTO payrate VALUES (2, 10, NULL);
+commit;
+
+INSERT INTO jobs VALUES (1, 1, 1, 1, 1);
+INSERT INTO jobs VALUES (2, 2, 0, 0, 2);
 
 commit;
 
-INSERT INTO position VALUES ();
-INSERT INTO position VALUES ();
-INSERT INTO position VALUES ();
-INSERT INTO position VALUES ();
+INSERT INTO requirement VALUES (1, 1, 1, 223);
+INSERT INTO requirement VALUES (2, 1, 1, 264);
+INSERT INTO requirement VALUES (3, 2, 2, 269);
+INSERT INTO requirement VALUES (4, 2, 2, 264);
 
 commit;
 
-INSERT INTO payrate VALUES ();
-INSERT INTO payrate VALUES ();
-INSERT INTO payrate VALUES ();
-INSERT INTO payrate VALUES ();
+INSERT INTO p_has VALUES (369, 223);
+INSERT INTO p_has VALUES (369, 264);
 
 commit;
 
-INSERT INTO job VALUES ();
-INSERT INTO job VALUES ();
-INSERT INTO job VALUES ();
-INSERT INTO job VALUES ();
-
-commit;
-
-INSERT INTO requirement VALUES ();
-INSERT INTO requirement VALUES ();
-INSERT INTO requirement VALUES ();
-INSERT INTO requirement VALUES ();
-
-commit;
-
-INSERT INTO course VALUES ();
-INSERT INTO course VALUES ();
-INSERT INTO course VALUES ();
-INSERT INTO course VALUES ();
-
-commit;
-
-INSERT INTO section VALUES ();
-INSERT INTO section VALUES ();
-INSERT INTO section VALUES ();
-INSERT INTO section VALUES ();
-
+INSERT INTO p_works VALUES (369, 1, DATE '2015-12-17', NULL);
 commit;
 
 ---------------------------------------------------------------------------------------------------------------------------------------
@@ -648,7 +630,7 @@ commit;
 INSERT INTO material VALUES (123, 'Iron', 100, 5, 10);
 INSERT INTO material VALUES (156, 'Copper', 30, 6, 12);
 INSERT INTO material VALUES (236, 'Uranium', 25, 3, 25);
-INSERT INTO material VALUES (300, 'Vibranium', 15, 1, 20;
+INSERT INTO material VALUES (300, 'Vibranium', 15, 1, 20);
 
 commit;
  
