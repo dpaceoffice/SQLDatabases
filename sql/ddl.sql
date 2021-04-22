@@ -11,9 +11,9 @@ DROP TABLE c_req;
 DROP TABLE course;
 DROP TABLE requirement;
 DROP TABLE skill;
-DROP TABLE job;
+DROP TABLE jobs;
 DROP TABLE payrate;
-DROP TABLE position;
+DROP TABLE jposition;
 DROP TABLE address;
 DROP TABLE company;
 DROP TABLE person;
@@ -97,8 +97,8 @@ CREATE TABLE address (
     company_id  NUMBER,--address can be for company
     person_id   NUMBER,--address can also be for person 
     zip         NUMBER(5),
-    street      VARCHAR(20),
-    city        VARCHAR(20),
+    street      VARCHAR(255),
+    city        VARCHAR(255),
     
     CONSTRAINT address_pk PRIMARY KEY ( address_id ),
     CONSTRAINT address_company_fk FOREIGN KEY ( company_id )
@@ -107,12 +107,12 @@ CREATE TABLE address (
         REFERENCES person ( person_id )
 );
 
-CREATE TABLE position (
+CREATE TABLE jposition (
     position_id  NUMBER,
     company_id   NUMBER,
-    title        VARCHAR(20),
-    p_desc       VARCHAR(25),
-    pay          NUMBER(1), --high, low
+    title        VARCHAR(255),
+    p_desc       VARCHAR(255),
+    --pay          NUMBER(1), -- position -> job -> pay
 
     CONSTRAINT position_pk PRIMARY KEY ( position_id ),
     CONSTRAINT position_companyid_fk FOREIGN KEY (company_id) REFERENCES company ( company_id )
@@ -126,18 +126,18 @@ CREATE TABLE payrate (
     CONSTRAINT pay_pk PRIMARY KEY ( pay_id )
 );
 
-CREATE TABLE job (
+CREATE TABLE jobs (
     job_id        NUMBER,
     position_id   NUMBER,
-    company       VARCHAR(50),
-    category_id   NUMBER,
+    --company       VARCHAR(50), position -> company -> company name
+    --category_id   NUMBER, this can be found through position->company->sub_industry 
     employeemode  NUMBER(1),--full time or part time, boolean?
     pay_type      NUMBER(1), -- Wage or Salary, boolean?
     pay_rate      NUMBER, --derived, multivalue
 
     CONSTRAINT job_pk PRIMARY KEY ( job_id ),
     CONSTRAINT job_position_fk FOREIGN KEY ( position_id )
-        REFERENCES position ( position_id ),
+        REFERENCES jposition ( position_id ),
     CONSTRAINT job_payrate_fk FOREIGN KEY ( pay_rate )
         REFERENCES payrate ( pay_id )
 );
@@ -159,9 +159,9 @@ CREATE TABLE requirement (
 
     CONSTRAINT req_pk PRIMARY KEY ( req_id ),
     CONSTRAINT requirement_pos_fk FOREIGN KEY ( pos_id )
-        REFERENCES position ( position_id ),
+        REFERENCES jposition ( position_id ),
     CONSTRAINT requirement_job_fk FOREIGN KEY ( job_id )
-        REFERENCES job ( job_id ),
+        REFERENCES jobs ( job_id ),
     CONSTRAINT requirement_skill_fk FOREIGN KEY ( skill_id )
         REFERENCES skill ( skill_id )
 );
@@ -244,13 +244,14 @@ CREATE TABLE p_enrolls (
 CREATE TABLE p_works (
     person_id  NUMBER,
     job_id     NUMBER,
-    
+    start_date DATE,
+    end_date   DATE,
     CONSTRAINT person_works_pk PRIMARY KEY ( person_id,
                                              job_id ),
     CONSTRAINT pworks_person_fk FOREIGN KEY ( person_id )
         REFERENCES person ( person_id ),
     CONSTRAINT pworks_job_fk FOREIGN KEY ( job_id )
-        REFERENCES job ( job_id )
+        REFERENCES jobs ( job_id )
 );
 
 -----------------------------------------------------------------------------AZ
