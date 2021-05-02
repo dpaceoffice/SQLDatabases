@@ -5,7 +5,7 @@ import project.Database;
 
 /**
  *
- * @author under
+ * @author David
  */
 public class GUI extends javax.swing.JFrame {
 
