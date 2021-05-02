@@ -155,7 +155,14 @@ public class Person extends Table {
 	}
 
     @Override
+    public boolean insert(Connection con) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
     public String toString() {
         return (first_name.replace(" ", "") +" "+last_name.replace(" ", ""));
     }
+
 }

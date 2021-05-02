@@ -98,7 +98,14 @@ public class Job extends Table {
     }
 
     @Override
+    public boolean insert(Connection con) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
     public String toString() {
         return "JobID: "+job_id+" Position ID:"+position_id;
     }
+
 }

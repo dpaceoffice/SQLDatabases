@@ -87,6 +87,12 @@ public class Skill extends Table {
     }
 
     @Override
+    public boolean insert(Connection con) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
     public String toString() {
         return title;
     }

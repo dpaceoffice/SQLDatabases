@@ -9,6 +9,7 @@ public abstract class Table {
 
     public abstract boolean fetch(Connection con);
 
+    public abstract boolean insert(Connection con);
 
     public abstract boolean delete(Connection con);
 
