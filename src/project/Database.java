@@ -34,7 +34,7 @@ public class Database {
      */
     private Database() {
         try {
-            con = DriverManager.getConnection("jdbc:oracle:thin:@dbsvcs.cs.uno.edu:1521:orcl", "dwpace", "3LdMtRsX");
+            con = DriverManager.getConnection("jdbc:oracle:thin:@dbsvcs.cs.uno.edu:1521:orcl", "dwpace", "#");
         } catch (SQLException e) {
             e.printStackTrace();
         }
