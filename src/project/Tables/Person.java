@@ -6,6 +6,7 @@ import java.sql.Statement;
 import java.util.HashMap;
 
 import project.Table;
+import project.Helpers.Duration;
 
 public class Person extends Table {
     

@@ -1,4 +1,4 @@
-package project.Tables;
+package project.Helpers;
 
 import java.sql.Date;
 

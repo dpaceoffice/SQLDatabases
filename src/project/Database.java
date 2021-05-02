@@ -3,7 +3,7 @@ package project;
 import java.sql.*;
 import java.util.Map;
 
-import project.Tables.Duration;
+import project.Helpers.Duration;
 import project.Tables.Job;
 import project.Tables.Person;
 import project.Tables.Skill;
