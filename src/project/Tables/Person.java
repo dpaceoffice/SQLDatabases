@@ -5,6 +5,8 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.HashMap;
 
+import project.Table;
+
 public class Person extends Table {
     
     private int person_id;

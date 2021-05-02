@@ -1,4 +1,4 @@
-package project.Tables;
+package project;
 
 import java.sql.Connection;
 import java.util.HashMap;

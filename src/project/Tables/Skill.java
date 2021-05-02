@@ -5,6 +5,8 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.HashMap;
 
+import project.Table;
+
 public class Skill extends Table {
 
     private int skill_id;
