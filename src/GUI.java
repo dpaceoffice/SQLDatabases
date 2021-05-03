@@ -320,7 +320,7 @@ public class GUI extends javax.swing.JFrame {
 
         TabSeperator.addTab("Job List", JobPanel);
 
-        SkillPanel.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        SkillPanel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         Object[] skills = db.getLoaded_skills().entrySet().toArray();
         String[] strings3 = new String[skills.length];
         for(int i = 0; i < skills.length; i ++) {
