@@ -3,7 +3,8 @@ package project;
 import java.sql.*;
 import java.util.Map;
 
-import project.Helpers.Duration;
+import project.RelationTables.PersonJobs;
+import project.RelationTables.PersonSkill;
 import project.Tables.Job;
 import project.Tables.Person;
 import project.Tables.Skill;
@@ -71,45 +72,19 @@ public class Database {
         return thread;
     }
 
-    public Thread load_owned_skills_relation() {
+    public Thread load_owned_jobs_relation() {
         Thread thread = new Thread(new Runnable() {
             public void run() {
-                try {
-                    Statement stmt = con.createStatement();
-                    ResultSet rs = stmt.executeQuery("SELECT * FROM p_has");
-                    while (rs.next()) {
-                        int person_id = rs.getInt("person_id");
-                        int skill_id = rs.getInt("skill_id");
-                        Person person = (Person) loaded_persons.get(person_id);
-                        Skill skill = (Skill) loaded_skills.get(skill_id);
-                        person.addSkill(skill_id, skill);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                new PersonJobs(loaded_persons, loaded_jobs, "person_job", con);
             }
         });
         return thread;
     }
 
-    public Thread load_owned_jobs_relation() {
+    public Thread load_owned_skills_relation() {
         Thread thread = new Thread(new Runnable() {
             public void run() {
-                try {
-                    Statement stmt = con.createStatement();
-                    ResultSet rs = stmt.executeQuery("SELECT * FROM p_works");
-                    while (rs.next()) {
-                        int person_id = rs.getInt("person_id");
-                        int job_id = rs.getInt("job_id");
-                        Date startDate = rs.getDate("start_date");
-                        Date endDate = rs.getDate("end_date");
-                        Person person = (Person) loaded_persons.get(person_id);
-                        Job job = (Job) loaded_jobs.get(job_id);
-                        person.addJob(job_id, job, new Duration(startDate, endDate));
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                new PersonSkill(loaded_persons, loaded_skills, "person_skill", con);
             }
         });
         return thread;
@@ -168,6 +143,7 @@ public class Database {
 
     public boolean init() {
         startThreads();
+        System.out.println(""+!loaded_jobs.isEmpty()+" "+!loaded_persons.isEmpty()+" "+!loaded_skills.isEmpty());
         return !loaded_jobs.isEmpty() && !loaded_persons.isEmpty() && !loaded_skills.isEmpty();
     }
 }
