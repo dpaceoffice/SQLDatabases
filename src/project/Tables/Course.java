@@ -1,9 +1,13 @@
+package project.Tables;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.HashMap;
 
-public class Course extends Table{
+import project.Table;
+
+public class Course extends Table {
 
 	private int courseID;
 	private String courseTitle;
@@ -25,13 +29,13 @@ public class Course extends Table{
 	public int getCourseID(){
 		return this.courseID;
 	}
-s
+
 	public String getCourseTitle(){
 		return this.courseTitle;
 	}
 
 	public String getCourseLvl(){
-		return this.courseLvl
+		return this.courseLvl;
 	}
 
 	public String getCourseDesc(){
@@ -47,7 +51,7 @@ s
 	}
 
 	public void setCourseLvl(String level){
-		this.courseLvl = level
+		this.courseLvl = level;
 	}
 
 	public void setCourseDesc(String desc){
@@ -59,14 +63,14 @@ s
 	public boolean fetch(Connection con){
 		try{
 			Statement stmt = con.createStatement();
-			ResultSet rs = stmt.excuteQuery("SELECT * FROM course");
+			ResultSet rs = stmt.executeQuery("SELECT * FROM course");
 			boolean flag = false;
-			while(rs.next()){
-				flag = true
-				int c_ID = rs.getInt('course_id');
-				String title = rs.getString('c_title');
-				String level = rs.getString('c_level');
-				String desc = rs.getString('c_desc');
+			while(rs.next()) {
+				flag = true;
+				int c_ID = rs.getInt("course_id");
+				String title = rs.getString("c_title");
+				String level = rs.getString("c_level");
+				String desc = rs.getString("c_desc");
 				Course course = new Course(c_ID, title, level, desc);
 				super.rows.put(c_ID, course);
 			}
@@ -79,12 +83,12 @@ s
 	}
 
 	@Override
-	public boolean insert(Connection con){
+	public boolean insert(Connection con) {
 		return false;
 	}
 
 	@Override
-	public boolean delete(Connection con){
+	public boolean delete(Connection con) {
 		return false;
 	}
 
