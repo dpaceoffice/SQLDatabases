@@ -13,7 +13,7 @@ public class Course extends Table {
 	private String courseTitle;
 	private String courseLvl;
 	private String courseDesc;
-	private HashMap<Integer, Skill> taught_skills;
+	private HashMap<Integer, Section> sections;
 
 	public Course (Connection connection){
 		super.rows = new HashMap<Integer, Object>();
@@ -25,7 +25,18 @@ public class Course extends Table {
 		this.courseTitle = title;
 		this.courseLvl = level;
 		this.courseDesc = desc;
+		this.sections = new HashMap<Integer, Section>();
 	}
+
+
+	public HashMap<Integer, Section> getSections() {
+		return sections;
+	}
+
+	public void addSection(Section section) {
+		this.sections.put(section.getSectionID(), section);
+	}
+
 
 	public int getCourseID(){
 		return this.courseID;
@@ -58,11 +69,6 @@ public class Course extends Table {
 	public void setCourseDesc(String desc){
 		this.courseDesc = desc;
 	}
-
-	public HashMap<Integer, Skill> getTaught_skills() {
-		return taught_skills;
-	}
-
 
 	@Override
 	public boolean fetch(Connection con){

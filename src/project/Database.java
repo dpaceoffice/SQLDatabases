@@ -5,9 +5,12 @@ import java.util.Map;
 
 import project.RelationTables.PersonJobs;
 import project.RelationTables.PersonSkill;
+import project.RelationTables.SectionCourse;
+import project.RelationTables.SectionSkill;
 import project.Tables.Course;
 import project.Tables.Job;
 import project.Tables.Person;
+import project.Tables.Section;
 import project.Tables.Skill;
 
 /**
@@ -20,6 +23,7 @@ public class Database {
     private Map<Integer, Object> loaded_skills;
     private Map<Integer, Object> loaded_persons;
     private Map<Integer, Object> loaded_courses;
+    private Map<Integer, Object> loaded_sections;
 
     /**
      * Gets the instance of singleton Database or creates it
@@ -83,6 +87,15 @@ public class Database {
         return thread;
     }
 
+    public Thread load_sections_table() {
+        Thread thread = new Thread(new Runnable() {
+            public void run() {
+                loaded_sections = new Section(con).rows;
+            }
+        });
+        return thread;
+    }
+
     public Thread load_owned_jobs_relation() {
         Thread thread = new Thread(new Runnable() {
             public void run() {
@@ -96,6 +109,24 @@ public class Database {
         Thread thread = new Thread(new Runnable() {
             public void run() {
                 new PersonSkill(loaded_persons, loaded_skills, "person_skill", con);
+            }
+        });
+        return thread;
+    }
+
+    public Thread load_section_course_relation() {
+        Thread thread = new Thread(new Runnable() {
+            public void run() {
+                new SectionCourse(loaded_sections, loaded_courses, "section_course", con);
+            }
+        });
+        return thread;
+    }
+
+    public Thread load_section_skill_relation() {
+        Thread thread = new Thread(new Runnable() {
+            public void run() {
+                new SectionSkill(loaded_sections, loaded_skills, "section_skill", con);
             }
         });
         return thread;
@@ -115,6 +146,9 @@ public class Database {
     public Map<Integer, Object> getLoaded_courses() {
         return loaded_courses;
     }
+    public Map<Integer, Object> getLoaded_sections() {
+        return loaded_sections;
+    }
 
     private void startThreads() {
         
@@ -125,12 +159,15 @@ public class Database {
         Thread sth = load_skill_table();
         Thread jth = load_jobs_table();
         Thread cth = load_courses_table();
+        Thread secth = load_sections_table();
         
         /**
          * Table relations
          */
         Thread srth = load_owned_skills_relation();
         Thread jrth = load_owned_jobs_relation();
+        Thread scrth = load_section_course_relation();
+        Thread ssrth = load_section_skill_relation();
 
         /**
          * Starts populating the hashmaps with data concurrently..
@@ -139,6 +176,7 @@ public class Database {
         sth.start();
         jth.start();
         cth.start();
+        secth.start();
         
         /**
          * We're waiting for these threads, allowing them to continue would mean having an open thread to feed information for each list..
@@ -155,11 +193,13 @@ public class Database {
          */
         srth.start();
         jrth.start();
+        scrth.start();
+        ssrth.start();
     }
 
     public boolean init() {
         startThreads();
-        System.out.println(""+!loaded_jobs.isEmpty()+" "+!loaded_persons.isEmpty()+" "+!loaded_skills.isEmpty()+" "+!loaded_courses.isEmpty());
-        return !loaded_jobs.isEmpty() && !loaded_persons.isEmpty() && !loaded_skills.isEmpty() && !loaded_courses.isEmpty();
+        System.out.println(""+!loaded_jobs.isEmpty()+" "+!loaded_persons.isEmpty()+" "+!loaded_skills.isEmpty()+" "+!loaded_courses.isEmpty()+" "+!loaded_sections.isEmpty()+"");
+        return !loaded_jobs.isEmpty() && !loaded_persons.isEmpty() && !loaded_skills.isEmpty() && !loaded_courses.isEmpty() && !loaded_sections.isEmpty();
     }
 }

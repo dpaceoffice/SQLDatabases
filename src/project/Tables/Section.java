@@ -16,6 +16,7 @@ public class Section extends Table{
 	private Date sectionOfferDate;
 	private int sectionFormat;
 	private int sectionPrice;
+	private HashMap<Integer, Skill> taught_skills;
 
 	public Section (Connection connection){
 		super.rows = new HashMap<Integer, Object>();
@@ -29,6 +30,7 @@ public class Section extends Table{
 		this.sectionOfferDate = offeringDate;
 		this.sectionFormat = format;
 		this.sectionPrice = price;
+		this.taught_skills = new HashMap<Integer, Skill>();
 	}
 
 	public int getSectionID(){
@@ -79,11 +81,20 @@ public class Section extends Table{
 		this.sectionPrice = price;
 	}
 
+	
+	public HashMap<Integer, Skill> getTaught_skills() {
+		return taught_skills;
+	}
+
+	public void addSkill(Skill skill) {
+		this.taught_skills.put(skill.getSkill_id(), skill);
+	}
+
 	@Override
 	public boolean fetch(Connection con){
 		try{
 			Statement stmt = con.createStatement();
-			ResultSet rs = stmt.excuteQuery("SELECT * FROM Section");
+			ResultSet rs = stmt.executeQuery("SELECT * FROM Section");
 			boolean flag = false;
 			while(rs.next()){
 				flag = true;
