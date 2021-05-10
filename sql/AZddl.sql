@@ -1,6 +1,8 @@
 DROP TABLE stock;
 DROP TABLE itemsold;
 DROP TABLE itembought;
+DROP TABLE customerAZ;
+DROP TABLE supplierAZ;
 DROP TABLE stores;
 DROP TABLE inventory;
 DROP TABLE sale;
@@ -9,7 +11,7 @@ DROP TABLE purchaseAZ;
 CREATE TABLE stores (
     storeid  NUMBER,
     address  VARCHAR(100),
-    zipcode  NUMBER,
+    zipcode  NUMBER(5),
     phone    CHAR(12),
     
     CONSTRAINT store_pk PRIMARY KEY ( storeid )
@@ -17,14 +19,14 @@ CREATE TABLE stores (
 
 CREATE TABLE inventory (
     itemnum       NUMBER,
-    quantity      NUMBER,
-    minlevel      NUMBER,
-    shelfcode     NUMBER,
-    unit          NUMBER,
-    avgcost       NUMBER,
     title         VARCHAR(100),
     descriptions  VARCHAR(100),
-    
+    quantity      NUMBER,
+    unit          NUMBER,
+    avgcost       NUMBER,
+    shelfcode     NUMBER,
+    minlevel      NUMBER,
+
     CONSTRAINT inventory_pk PRIMARY KEY ( itemnum )
 );
 
@@ -41,7 +43,7 @@ CREATE TABLE sale (
 
 CREATE TABLE purchaseAZ (
     purchasenbr   NUMBER,
-    puchase_date  DATE,
+    purchase_date  DATE,
     unitcost      NUMBER,
     note          VARCHAR(100),
     quantity      NUMBER,
@@ -49,6 +51,23 @@ CREATE TABLE purchaseAZ (
     CONSTRAINT purchaseAZ_pk PRIMARY KEY ( purchasenbr )
 );
 
+CREATE TABlE customerAZ(
+    customerID      NUMBER,
+    purchaseNbr      NUMBER,
+    customerName    VARCHAR(100),
+    
+    CONSTRAINT customerAZ_PK PRIMARY KEY (customerID),
+    CONSTRAINT customerAZ_FK FOREIGN KEY (purchaseNbr) REFERENCES purchaseAZ (purchasenbr)
+);
+
+CREATE TABlE supplierAZ(
+    supplierID      NUMBER,
+    invoiceNbr      NUMBER,
+    customerName    VARCHAR(100),
+    
+    CONSTRAINT supplierAZ_PK PRIMARY KEY (supplierID),
+    CONSTRAINT supplierAZ_FK FOREIGN KEY (invoiceNbr) REFERENCES sale (invoicenbr)
+);
 --Realationals
 
 CREATE TABLE stock (
