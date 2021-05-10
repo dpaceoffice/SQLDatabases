@@ -14,8 +14,11 @@ public class GUI extends javax.swing.JFrame {
      */
     public GUI() {
         Database db = Database.getInstance();
-        if(db.init())
+        System.out.println("Starting..");
+        if(db.init()) {
+            System.out.println("Initilized");
             initComponents();
+        }
     }
 
     /**
