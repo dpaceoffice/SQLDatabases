@@ -290,17 +290,17 @@ INSERT INTO position_skill VALUES (
 
 SELECT
     positions.position_id,
-    skill.title
+    skill.title AS "Skill Title"
 FROM
     skill,
     positions,
     position_skill
 WHERE
-    ( positions.position_id = &person_identifer
+    ( positions.position_id = &position_identifer
       AND position_skill.position_id = positions.position_id
       AND skill.skill_id = position_skill.skill_id );
 
---5. Given a person’s identifier, list this person’s skills in a readable format.
+--5. Given a person's identifier, list this person's skills in a readable format.
 INSERT INTO person_skill VALUES (
     0,
     0
@@ -331,6 +331,10 @@ INSERT INTO person_skill VALUES (
     3
 );
 INSERT INTO person_skill VALUES (
+    3,
+    3
+);
+INSERT INTO person_skill VALUES (
     4,
     3
 );
@@ -352,7 +356,7 @@ WHERE
     AND person.person_id = person_skill.person_id
     AND skill.skill_id = person_skill.skill_id;
 
---6. Given a person’s identifier, list a person’s missing skills for a specific PositionCode in a readable format.
+--6. Given a person's identifier, list a person's missing skills for a specific PositionCode in a readable format.
 
 SELECT
     positions.title AS "Position",
@@ -370,7 +374,7 @@ WHERE skill.skill_id NOT IN (
             person_skill.person_id = &Person_id
     );
 
---13. For the LD database, given a person’s identifier, find all the jobs this person is currently
+--13. For the LD database, given a person's identifier, find all the jobs this person is currently
 -- holding and worked in the past.
 SELECT 
     person.first_name,
@@ -484,10 +488,110 @@ WHERE industry.industry_id = industry_sub_industr.industry_id
     AND pay_type.wage_salary = 1
     AND person_job.end_date IS NULL) industry_salary
     GROUP BY industry_salary.title;
-    
+--17. Find out the biggest employer, industry, and industry group in terms of number of employees.
+--(Note: This should be three separate queries)
+SELECT bemployer."Employer" AS "Biggest Employer", bindustry."Industry" AS "Biggest Industry", bsub."Sub-Industry" AS "Biggest Sub-Industry"
+FROM(
+SELECT e.c_name AS "Employer", COUNT(e.person_id) AS "Active Employees"
+FROM(
+SELECT company.c_name, person.person_id
+FROM company, positions, jobs, person, position_company, position_job, person_job
+WHERE company.company_id = position_company.company_id AND positions.position_id = position_company.position_id
+    AND jobs.job_id = position_job.job_id AND positions.position_id = position_job.position_id
+    AND person.person_id = person_job.person_id AND jobs.job_id = person_job.job_id
+    AND person_job.end_date IS NULL) e
+GROUP BY e.c_name
+HAVING COUNT(e.person_id) = MAX(e.person_id)) bemployer,
+
+(SELECT e.title AS "Industry", COUNT(e.person_id) AS "Active Employees"
+FROM(
+SELECT industry.title, person.person_id
+FROM industry, sub_industry, industry_sub_industr,  company, company_sub_industry, positions, jobs, person, position_company, position_job, person_job
+WHERE industry.industry_id = industry_sub_industr.industry_id
+    AND sub_industry.sub_industry_id = industry_sub_industr.sub_industry_id
+    AND sub_industry.sub_industry_id = company_sub_industry.sub_industry_id 
+    AND company.company_id = company_sub_industry.company_id
+    AND company.company_id = position_company.company_id AND positions.position_id = position_company.position_id
+    AND jobs.job_id = position_job.job_id AND positions.position_id = position_job.position_id
+    AND person.person_id = person_job.person_id AND jobs.job_id = person_job.job_id
+    AND person_job.end_date IS NULL) e
+GROUP BY e.title
+HAVING COUNT(e.person_id) = MAX(e.person_id)) bindustry,
+
+(SELECT e.sub_desc AS "Sub-Industry", COUNT(e.person_id) AS "Active Employees"
+FROM(
+SELECT sub_industry.sub_desc, person.person_id
+FROM sub_industry,  company, company_sub_industry, positions, jobs, person, position_company, position_job, person_job
+WHERE sub_industry.sub_industry_id = company_sub_industry.sub_industry_id 
+    AND company.company_id = company_sub_industry.company_id
+    AND company.company_id = position_company.company_id AND positions.position_id = position_company.position_id
+    AND jobs.job_id = position_job.job_id AND positions.position_id = position_job.position_id
+    AND person.person_id = person_job.person_id AND jobs.job_id = person_job.job_id
+    AND person_job.end_date IS NULL) e
+GROUP BY e.sub_desc
+HAVING COUNT(e.person_id) = MAX(e.person_id)) bsub;
+
+
+--18.) Find out the job distribution among industries by showing the number of employees in each
+--industry.
+SELECT e.title AS "Industry", COUNT(e.person_id) AS "Active Employees"
+FROM(
+SELECT industry.title, person.person_id
+FROM industry, sub_industry, industry_sub_industr,  company, company_sub_industry, positions, jobs, person, position_company, position_job, person_job
+WHERE industry.industry_id = industry_sub_industr.industry_id
+    AND sub_industry.sub_industry_id = industry_sub_industr.sub_industry_id
+    AND sub_industry.sub_industry_id = company_sub_industry.sub_industry_id 
+    AND company.company_id = company_sub_industry.company_id
+    AND company.company_id = position_company.company_id AND positions.position_id = position_company.position_id
+    AND jobs.job_id = position_job.job_id AND positions.position_id = position_job.position_id
+    AND person.person_id = person_job.person_id AND jobs.job_id = person_job.job_id
+    AND person_job.end_date IS NULL) e
+GROUP BY e.title
+ORDER BY "Active Employees" DESC;
+
+--19. Given a person’s identifier and a PositionCode, find the courses (course id and title) that
+--each alone teaches all the missing skills for this person to be qualified for the specified
+--position, assuming the skill gap of the worker and the requirement of the position can be
+--covered by one course.
+
+INSERT INTO course VALUES (0, 'Coffee Making 101', 'Level 1', 'We teach coffee');
+INSERT INTO section VALUES (0, 2021, NULL, NULL, 1, 50);
+INSERT INTO section_skill VALUES(0, 3);
+INSERT INTO section_course VALUES(0,0);
+
+INSERT INTO course VALUES (1, 'C++ Programming Language', 'Level 1', 'Learn C++');
+INSERT INTO section VALUES (1, 2021, NULL, NULL, 1, 100);
+INSERT INTO section_skill VALUES(1, 2);
+INSERT INTO section_course VALUES(1,1);
+
+SELECT course.course_id, course.c_title
+FROM course, section, skill, section_course, section_skill
+WHERE course.course_id = section_course.course_id 
+    AND section_course.section_id = section.section_id
+    AND skill.skill_id = section_skill.skill_id
+    AND section.section_id = section_skill.section_id
+    AND skill.skill_id IN(
+SELECT
+    skill.skill_id
+FROM position_skill
+INNER JOIN skill ON ( position_skill.position_id = &position_identifer
+                          AND skill.skill_id = position_skill.skill_id )
+INNER JOIN positions ON (position_skill.position_id = positions.position_id)
+WHERE skill.skill_id NOT IN (
+        SELECT
+            person_skill.skill_id
+        FROM
+            person_skill
+        WHERE
+            person_skill.person_id = &Person_id
+    ));
+
+--20. Given a person’s identifier, find the job position with the highest pay rate for this person
+--according to his/her skill possession
+
 --21. Given a position code, list all the names along with the emails of the persons who are
 --qualified for this position.
---define pinput = '&position_code'
+define pinput = '&position_code'
 SELECT
     person.first_name,
     person.last_name,
@@ -512,7 +616,7 @@ HAVING
             (
                 position_skill
                 INNER JOIN skill ON position_skill.skill_id = skill.skill_id
-                                    AND position_skill.position_id = &&pinput
+                                    AND position_skill.position_id = &pinput
             )
         GROUP BY
             position_skill.position_id
