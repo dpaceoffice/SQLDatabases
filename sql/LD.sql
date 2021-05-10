@@ -621,3 +621,4 @@ HAVING
         GROUP BY
             position_skill.position_id
     );
+commit;
