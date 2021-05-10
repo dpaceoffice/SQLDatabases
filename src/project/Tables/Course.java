@@ -13,6 +13,7 @@ public class Course extends Table {
 	private String courseTitle;
 	private String courseLvl;
 	private String courseDesc;
+	private HashMap<Integer, Skill> taught_skills;
 
 	public Course (Connection connection){
 		super.rows = new HashMap<Integer, Object>();
@@ -56,6 +57,10 @@ public class Course extends Table {
 
 	public void setCourseDesc(String desc){
 		this.courseDesc = desc;
+	}
+
+	public HashMap<Integer, Skill> getTaught_skills() {
+		return taught_skills;
 	}
 
 

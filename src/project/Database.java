@@ -5,6 +5,7 @@ import java.util.Map;
 
 import project.RelationTables.PersonJobs;
 import project.RelationTables.PersonSkill;
+import project.Tables.Course;
 import project.Tables.Job;
 import project.Tables.Person;
 import project.Tables.Skill;
@@ -18,6 +19,7 @@ public class Database {
     private Map<Integer, Object> loaded_jobs;
     private Map<Integer, Object> loaded_skills;
     private Map<Integer, Object> loaded_persons;
+    private Map<Integer, Object> loaded_courses;
 
     /**
      * Gets the instance of singleton Database or creates it
@@ -35,7 +37,7 @@ public class Database {
      */
     private Database() {
         try {
-            con = DriverManager.getConnection("jdbc:oracle:thin:@dbsvcs.cs.uno.edu:1521:orcl", "dwpace", "#");
+            con = DriverManager.getConnection("jdbc:oracle:thin:@dbsvcs.cs.uno.edu:1521:orcl", "dwpace", "blue123456");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -72,6 +74,15 @@ public class Database {
         return thread;
     }
 
+    public Thread load_courses_table() {
+        Thread thread = new Thread(new Runnable() {
+            public void run() {
+                loaded_courses = new Course(con).rows;
+            }
+        });
+        return thread;
+    }
+
     public Thread load_owned_jobs_relation() {
         Thread thread = new Thread(new Runnable() {
             public void run() {
@@ -101,6 +112,9 @@ public class Database {
     public Map<Integer, Object> getLoaded_persons() {
         return loaded_persons;
     }
+    public Map<Integer, Object> getLoaded_courses() {
+        return loaded_courses;
+    }
 
     private void startThreads() {
         
@@ -110,6 +124,7 @@ public class Database {
         Thread pth = load_person_table();
         Thread sth = load_skill_table();
         Thread jth = load_jobs_table();
+        Thread cth = load_courses_table();
         
         /**
          * Table relations
@@ -123,12 +138,13 @@ public class Database {
         pth.start();
         sth.start();
         jth.start();
+        cth.start();
         
         /**
          * We're waiting for these threads, allowing them to continue would mean having an open thread to feed information for each list..
          * Because we start them all at the same time it should improve our time. When every table is more populated this will improve time significantly.
          */
-        while (pth.isAlive() || sth.isAlive() || jth.isAlive()) {
+        while (pth.isAlive() || sth.isAlive() || jth.isAlive() || cth.isAlive()) {
             continue;
         }
 
@@ -143,7 +159,7 @@ public class Database {
 
     public boolean init() {
         startThreads();
-        System.out.println(""+!loaded_jobs.isEmpty()+" "+!loaded_persons.isEmpty()+" "+!loaded_skills.isEmpty());
-        return !loaded_jobs.isEmpty() && !loaded_persons.isEmpty() && !loaded_skills.isEmpty();
+        System.out.println(""+!loaded_jobs.isEmpty()+" "+!loaded_persons.isEmpty()+" "+!loaded_skills.isEmpty()+" "+!loaded_courses.isEmpty());
+        return !loaded_jobs.isEmpty() && !loaded_persons.isEmpty() && !loaded_skills.isEmpty() && !loaded_courses.isEmpty();
     }
 }

@@ -3,6 +3,7 @@ import java.util.Map.Entry;
 import java.util.Scanner;
 
 import project.Database;
+import project.Tables.Course;
 import project.Tables.Person;
 import project.Tables.Skill;
 
@@ -38,6 +39,12 @@ public class CLI {
 			System.out.println(skill.getSkill_id() + " " + skill.getTitle());
 		}
 
+		Course course = (Course) db.getLoaded_courses().get(courseId);
+		System.out.println("Transcript skills:");
+		for(Entry<Integer, Skill> set : course.getTaught_skills().entrySet()) {
+			Skill skill = set.getValue();
+			System.out.println(skill.getSkill_id() + " " + skill.getTitle());
+		}
 	}
 
 }
