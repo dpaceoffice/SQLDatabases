@@ -12,18 +12,16 @@ public class Skill extends Table {
     private int skill_id;
     private String title;
     private String description;
-    private int level;
 
     public Skill(Connection connection) {
         super.rows = new HashMap<Integer, Object>();
         fetch(connection);
     }
 
-    private Skill(int skill_id, String title, String description, int level) {
+    private Skill(int skill_id, String title, String description) {
         this.skill_id = skill_id;
         this.title = title;
         this.description = description;
-        this.level = level;
     }
 
     public int getSkill_id() {
@@ -50,13 +48,6 @@ public class Skill extends Table {
         this.description = description;
     }
 
-    public int getLevel() {
-        return level;
-    }
-
-    public void setLevel(int level) {
-        this.level = level;
-    }
 
     @Override
     public boolean fetch(Connection con) {
@@ -68,9 +59,8 @@ public class Skill extends Table {
                 flag = true;
                 int skill_id = rs.getInt("skill_id");
                 String title = rs.getString("title");
-                String desc = rs.getString("s_desc");
-                int level = rs.getInt("s_level");
-                Skill skill = new Skill(skill_id, title, desc, level);
+                String desc = rs.getString("skill_desc");
+                Skill skill = new Skill(skill_id, title, desc);
                 super.rows.put(skill_id, skill);
             }
             return flag;

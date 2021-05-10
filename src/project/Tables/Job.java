@@ -10,22 +10,16 @@ import project.Table;
 public class Job extends Table {
 
     private int job_id;
-    private int position_id;
     private int employee_mode;
-    private int pay_type;
-    private int pay_rate;
 
     public Job(Connection connection) {
         super.rows = new HashMap<Integer, Object>();
         fetch(connection);
     }
 
-    private Job(int job_id, int position_id, int employee_mode, int pay_type, int pay_rate) {
+    private Job(int job_id, int employee_mode) {
         this.job_id = job_id;
-        this.position_id = position_id;
         this.employee_mode = employee_mode;
-        this.pay_type = pay_type;
-        this.pay_rate = pay_rate;
     }
 
     public int getJob_id() {
@@ -36,14 +30,6 @@ public class Job extends Table {
         this.job_id = job_id;
     }
 
-    public int getPosition_id() {
-        return position_id;
-    }
-
-    public void setPosition_id(int position_id) {
-        this.position_id = position_id;
-    }
-
     public int getEmployee_mode() {
         return employee_mode;
     }
@@ -52,21 +38,6 @@ public class Job extends Table {
         this.employee_mode = employee_mode;
     }
 
-    public int getPay_type() {
-        return pay_type;
-    }
-
-    public void setPay_type(int pay_type) {
-        this.pay_type = pay_type;
-    }
-
-    public int getPay_rate() {
-        return pay_rate;
-    }
-
-    public void setPay_rate(int pay_rate) {
-        this.pay_rate = pay_rate;
-    }
 
     @Override
     public boolean fetch(Connection con) {
@@ -77,11 +48,8 @@ public class Job extends Table {
             while (rs.next()) {
                 flag = true;
                 int job_id = rs.getInt("job_id");
-                int position_id = rs.getInt("position_id");
                 int employee_mode = rs.getInt("employeemode");
-                int pay_type = rs.getInt("pay_type");
-                int pay_rate = rs.getInt("pay_rate");
-                Job job = new Job(job_id, position_id, employee_mode, pay_type, pay_rate);
+                Job job = new Job(job_id, employee_mode);
                 super.rows.put(job_id, job);
             }
             return flag;
@@ -105,7 +73,7 @@ public class Job extends Table {
 
     @Override
     public String toString() {
-        return "JobID: "+job_id+" Position ID:"+position_id;
+        return "JobID: "+job_id;
     }
 
 }
